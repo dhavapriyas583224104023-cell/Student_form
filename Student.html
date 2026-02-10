@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student Form</title>
+
+<style>
+body{
+    font-family: Arial;
+    background-image: url(edu.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+}
+
+h2{
+    text-align:center;
+}
+
+/*.form-box{
+    width:400px;
+    background:white;
+    padding:30px;
+    border:2px solid #333;
+    margin:20px auto;
+    border-radius: 20px;
+}*/
+.form-box{
+    width:400px;
+    padding:30px;
+    margin:20px auto;
+
+    background: rgba(255, 255, 255, 0.85); 
+    backdrop-filter: blur(6px);           
+    -webkit-backdrop-filter: blur(6px);
+
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.4);
+
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    transition: all 0.3s ease;
+}
+.form-box:hover{
+    box-shadow: 0 12px 35px rgba(0,0,0,0.18);
+}
+
+
+input, select{
+    width: 100%;
+    padding:5px;
+    margin:5px 0px;
+}
+
+button{
+    background: green;
+    color:white;
+    padding:5px;
+    border:none;
+    width: 100%;
+    margin-top:10px;
+    cursor:pointer;
+}
+.view-btn{
+    width:200px;
+    margin:20px auto;
+    display:block;
+    background:#0047ab;
+}
+.popup{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.6);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.popup-content{
+    background:white;
+    width:80%;
+    padding:20px;
+    border-radius:10px;
+    animation:fadeIn 0.4s ease;
+}
+
+.close{
+    float:right;
+    font-size:22px;
+    cursor:pointer;
+}
+
+.alert{
+    position: fixed;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #d9534f;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: top 0.4s ease;
+    z-index: 1000;
+}
+
+.alert.show{
+    top: 20px;
+}
+
+
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+    background-color: white;
+
+}
+
+th,td{
+    border:1px solid black;
+    padding:8px;
+    text-align:center;
+}
+
+th{
+    background:#0047ab;
+    color:white;
+}
+
+.delete-btn{
+    background:red;
+    color:white;
+    border:none;
+    padding:5px 10px;
+    cursor:pointer;
+}
+.full{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;  
+}
+.alert{
+    position: fixed;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #d9534f;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: top 0.4s ease;
+    z-index: 1000;
+}
+
+.alert.show{
+    top: 20px;
+}
+
+
+@keyframes fadeIn{
+    from{
+        transform:scale(0.8);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="full">
+    <h2>STUDENT FORM</h2>
+    <div class="form-box">
+        <input id="name" placeholder="Name">
+        <input id="age" placeholder="Age">
+    Gender:
+        <input type="radio" name="gender" value="Male"> Male
+        <input type="radio" name="gender" value="Female"> Female <br>
+
+    <select id="course">
+        <option>JavaScript</option>
+        <option>Python</option>
+        <option>Java</option>
+        <option>C</option>
+        <option>C++</option>
+        <option>HTML</option>
+        <option>CSS</option>
+    </select>
+    <input id="email" placeholder="Email">
+    <button onclick="addStudent()">Save</button>
+    </div>
+
+</div>
+<!--<h2>STUDENT FORM</h2>
+
+<div class="form-box">
+   <input id="name" placeholder="Name">
+   <input id="age" placeholder="Age">
+
+   Gender:
+   <input type="radio" name="gender" value="Male"> Male
+   <input type="radio" name="gender" value="Female"> Female <br><br>
+
+   <select id="course">
+        <option>JavaScript</option>
+        <option>Python</option>
+        <option>Java</option>
+        <option>C</option>
+        <option>C++</option>
+        <option>HTML</option>
+        <option>CSS</option>
+   </select>
+
+   <input id="email" placeholder="Email">
+
+   <button onclick="addStudent()">Save</button>
+</div>-->
+
+<div id="alertBox" class="alert">
+  Please fill all required fields!
+</div>
+
+
+<button class="view-btn" onclick="openPopup()">View Saved Data</button>
+<div id="popup" class="popup">
+  <div class="popup-content">
+    <span id="close" onclick="closePopup()">&times;</span>
+    <h2>Saved Students</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Age</th>
+          <th>Course</th>
+          <th>Gender</th>
+          <th>Email</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+
+let students = [];
+
+function openPopup(){
+    document.getElementById("popup").style.display="flex";
+}
+
+function closePopup(){
+    document.getElementById("popup").style.display="none";
+}
+function addStudent(){
+
+    var name = document.getElementById("name").value.trim();
+    var age = document.getElementById("age").value.trim();
+    var course = document.getElementById("course").value;
+    var email = document.getElementById("email").value.trim();
+
+    var gender="";
+    var radios = document.getElementsByName("gender");
+    for(var i=0;i<radios.length;i++){
+        if(radios[i].checked){
+            gender = radios[i].value;
+        }
+    }
+    if(name==="" || age==="" || email==="" || gender===""){
+        showAlert();
+        return;
+    }
+    students.push({name, age, course, gender, email});
+    renderTable();
+}
+function renderTable(){
+    var table = document.getElementById("tableBody");
+    table.innerHTML = "";
+
+    students.forEach((s, index)=>{
+        var row = table.insertRow();
+
+        row.insertCell(0).innerHTML = s.name;
+        row.insertCell(1).innerHTML = s.age;
+        row.insertCell(2).innerHTML = s.course;
+        row.insertCell(3).innerHTML = s.gender;
+        row.insertCell(4).innerHTML = s.email;
+        row.insertCell(5).innerHTML =
+          `<button class="delete-btn" onclick="deleteRow(${index})">Delete</button>`;
+    });
+}
+function showAlert(){
+    var alertBox = document.getElementById("alertBox");
+    alertBox.classList.add("show");
+
+    setTimeout(() => {
+        alertBox.classList.remove("show");
+    }, 2500);
+}
+function deleteRow(index){
+    students.splice(index, 1);
+    renderTable();
+}
+</script>
+</body>
+</html>
